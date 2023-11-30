@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "mongo.database",
+      "type": "java.lang.String",
+      "description": "Description for mongo.database."
+  }
+] }
