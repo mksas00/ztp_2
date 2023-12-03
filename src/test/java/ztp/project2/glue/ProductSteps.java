@@ -17,9 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import ztp.project2.DTO.ProductDTO;
 import ztp.project2.Mapper.ProductMapper;
 import ztp.project2.Model.Product;
@@ -52,6 +50,7 @@ public class ProductSteps {
     private Product expectedProduct;
     private Product actualProduct;
     private Product savedProduct;
+    private  ResponseEntity<?> response;
 
     @Before
     public void setUp(){
@@ -175,4 +174,33 @@ public class ProductSteps {
         Assertions.assertEquals(actualProductsDTO.size(), expectedProductsDTO.size());
         Assertions.assertEquals(actualProductsDTO.get(0).getName(), expectedProductsDTO.get(0).getName());
     }
+
+    @When("the client provides wrong product ID to fetch")
+    public void theClientProvidesWrongProductIDToFetch() throws JsonProcessingException {
+
+        response = testRestTemplate.getForEntity("/product/" + "non-existent-id", String.class);
+    }
+
+    @Then("an error is returned")
+    public void anErrorIsReturned() {
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Given("the client wants to add a new product with wrong data")
+    public void theClientWantsToAddANewProductWithWrongData() {
+        newProduct = new Product();
+    }
+
+    @When("the client provides wrong product details:")
+    public void theClientProvidesWrongProductDetails(List<Product> products) {
+        newProduct = products.get(0);
+        response = testRestTemplate.postForEntity("/product", newProduct, String.class);
+    }
+
+    @Then("a product creation error is returned")
+    public void aProductCreationErrorIsReturned() {
+        assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertEquals(response.getBody(), "Product price is equal or lower than 0");
+    }
+
 }

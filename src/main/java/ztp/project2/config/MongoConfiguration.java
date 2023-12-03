@@ -13,8 +13,11 @@ public class MongoConfiguration{
     @Value("${mongo.database}")
     private String mongoDatabase;
 
+    @Value("${mongo.port}")
+    private String mongoPort;
+
     @Bean
-    public MongoClient mongoClient(){return MongoClients.create("mongodb://localhost:27018");}
+    public MongoClient mongoClient(){return MongoClients.create("mongodb://localhost:" + this.mongoPort);}
 
     @Bean
     public MongoTemplate mongoTemplate(final MongoClient mongoClient){

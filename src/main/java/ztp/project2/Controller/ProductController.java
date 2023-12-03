@@ -41,9 +41,14 @@ public class ProductController {
     }
 
     @GetMapping(value = "/{productId}")
-    public ResponseEntity<Product> getProduct(@PathVariable String productId){
-        Product responseData = productService.getProductById(productId);
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    public ResponseEntity<?> getProduct(@PathVariable String productId){
+        try {
+            Product responseData = productService.getProductById(productId);
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        }
+        catch (NullPointerException exception){
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping
@@ -60,9 +65,15 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String productId){
-        productService.deleteProduct(productId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteProduct(@PathVariable String productId){
+        try {
+            productService.deleteProduct(productId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (NullPointerException exception){
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 

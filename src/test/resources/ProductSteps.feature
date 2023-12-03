@@ -39,3 +39,14 @@ Feature: Product Management
       | New Product2   | A new product entry2   | 120.0 | 15     | Beauty      | 20       |
     When the client provides the product ID to delete
     Then the product with provided ID is successfully deleted
+
+  Scenario: Retrieve a product by wrong ID
+    When the client provides wrong product ID to fetch
+    Then an error is returned
+
+  Scenario: Add a new product with wrong data
+    Given the client wants to add a new product with wrong data
+    When the client provides wrong product details:
+      | name           | description            | price | weight | category    | quantity |
+      | New Product    | A new product entry    | -1  | 1.5    | Electronics | 150      |
+    Then a product creation error is returned
