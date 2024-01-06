@@ -6,7 +6,7 @@ import ztp.project2.Model.Product;
 @Service
 public class ProductFilter{
 
-    public void filterProduct(Product product){
+    public Product filterProduct(Product product){
 
         if (product.getName().isEmpty()){
             throw new NullPointerException("Product name is blank");
@@ -26,5 +26,7 @@ public class ProductFilter{
         if (product.getCategory().isEmpty()){
             throw new IllegalArgumentException("Product category is blank");
         }
+
+        return product;
     }
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
@@ -22,8 +22,10 @@ public class ProductController {
     @Autowired
     private ProductFilter productFilter;
 
+    @CrossOrigin
     @PostMapping
     public ResponseEntity<?> saveProduct(@RequestBody Product product){
+        System.out.println("saveProduct");
         try {
             productFilter.filterProduct(product);
         }
@@ -34,18 +36,30 @@ public class ProductController {
         return new ResponseEntity<>(responseData, HttpStatus.CREATED);
     }
 
+    @CrossOrigin
     @GetMapping
     public ResponseEntity<List<ProductDTO>> listProducts(){
+        System.out.println("listProducts");
+
         List<ProductDTO> responseData = productService.listProducts();
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+    @CrossOrigin
     @GetMapping(value = "/{productId}")
-    public ResponseEntity<Product> getProduct(@PathVariable String productId){
-        Product responseData = productService.getProductById(productId);
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    public ResponseEntity<?> getProduct(@PathVariable String productId){
+        try {
+
+            System.out.println(productId);
+            Product responseData = productService.getProductById(productId);
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        }
+        catch (NullPointerException exception){
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
+    @CrossOrigin
     @PutMapping
     public ResponseEntity<?> updateProduct(@RequestBody Product product){
         try {
@@ -59,6 +73,7 @@ public class ProductController {
 
     }
 
+    @CrossOrigin
     @DeleteMapping(value = "/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String productId){
         productService.deleteProduct(productId);
